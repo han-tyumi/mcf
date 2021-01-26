@@ -34,8 +34,8 @@ type ModsOptions struct {
 	Sort     SortType `url:"sort,omitempty"`
 }
 
-// Mods fetches all Minecraft CurseForge mods.
-func Mods(o *ModsOptions) ([]Mod, error) {
+// All fetches all Minecraft CurseForge mods.
+func All(o *ModsOptions) ([]Mod, error) {
 	v, err := query.Values(o)
 	if err != nil {
 		return nil, err
