@@ -3,6 +3,7 @@ package mcf
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -65,4 +66,25 @@ func All(o *ModsOptions) ([]Mod, error) {
 	}
 
 	return mods, nil
+}
+
+// One fetches a single Minecraft CurseForge mod by ID.
+func One(id uint) (*Mod, error) {
+	res, err := http.Get(fmt.Sprintf("%s%d", BaseURL, id))
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return nil, errors.New(res.Status)
+	}
+
+	mod := &Mod{}
+	d := json.NewDecoder(res.Body)
+	if err := d.Decode(mod); err != nil && err != io.EOF {
+		return nil, err
+	}
+
+	return mod, nil
 }

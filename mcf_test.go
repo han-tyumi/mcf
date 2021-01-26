@@ -11,3 +11,9 @@ func TestAll(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestOne(t *testing.T) {
+	if _, err := mcurse.One(238222); err != nil {
+		t.Fatal(err)
+	}
+}
