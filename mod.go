@@ -1,4 +1,4 @@
-package mcurse
+package mcf
 
 // Mod is the JSON response of a mod retrieved from CurseForge.
 type Mod struct {

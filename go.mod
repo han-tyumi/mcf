@@ -1,4 +1,4 @@
-module github.com/han-tyumi/mcurse
+module github.com/han-tyumi/mcf
 
 go 1.15
 

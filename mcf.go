@@ -1,4 +1,4 @@
-package mcurse
+package mcf
 
 import (
 	"encoding/json"
