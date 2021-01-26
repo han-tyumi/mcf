@@ -1,4 +1,4 @@
-package mcf
+package api
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package mcf
+package api
 
 // ModFile is the JSON response of a mod file retrieved from CurseForge.
 type ModFile struct {
