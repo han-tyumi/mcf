@@ -26,8 +26,8 @@ const (
 	TotalDownloads
 )
 
-// ModsOptions specify the parameters for a mods query.
-type ModsOptions struct {
+// AllQuery specify the parameters for a mods query.
+type AllQuery struct {
 	Version  string   `url:"gameVersion,omitempty"`
 	Search   string   `url:"searchFilter,omitempty"`
 	Page     uint     `url:"index,omitempty"`
@@ -36,8 +36,8 @@ type ModsOptions struct {
 }
 
 // All fetches all Minecraft CurseForge mods.
-func All(o *ModsOptions) ([]Mod, error) {
-	v, err := query.Values(o)
+func All(q *AllQuery) ([]Mod, error) {
+	v, err := query.Values(q)
 	if err != nil {
 		return nil, err
 	}

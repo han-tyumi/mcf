@@ -7,7 +7,7 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	if _, err := mcurse.All(&mcurse.ModsOptions{}); err != nil {
+	if _, err := mcurse.All(&mcurse.AllQuery{}); err != nil {
 		t.Fatal(err)
 	}
 }
