@@ -7,7 +7,7 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	if _, err := api.All(&api.AllQuery{}); err != nil {
+	if _, err := api.Many(&api.ManyParams{}); err != nil {
 		t.Fatal(err)
 	}
 }

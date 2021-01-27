@@ -26,8 +26,8 @@ const (
 	TotalDownloads
 )
 
-// AllQuery specify the parameters for a mods query.
-type AllQuery struct {
+// ManyParams specify the parameters for a mods query.
+type ManyParams struct {
 	Version  string   `url:"gameVersion,omitempty"`
 	Search   string   `url:"searchFilter,omitempty"`
 	Page     uint     `url:"index,omitempty"`
@@ -35,8 +35,8 @@ type AllQuery struct {
 	Sort     SortType `url:"sort,omitempty"`
 }
 
-// All fetches all Minecraft CurseForge mods.
-func All(q *AllQuery) ([]Mod, error) {
+// Many fetches all Minecraft CurseForge mods based on query parameters.
+func Many(q *ManyParams) ([]Mod, error) {
 	v, err := query.Values(q)
 	if err != nil {
 		return nil, err
@@ -66,6 +66,11 @@ func All(q *AllQuery) ([]Mod, error) {
 	}
 
 	return mods, nil
+}
+
+// All returns all Minecraft CurseForge mods.
+func All() ([]Mod, error) {
+	return Many(&ManyParams{})
 }
 
 // One fetches a single Minecraft CurseForge mod by ID.
