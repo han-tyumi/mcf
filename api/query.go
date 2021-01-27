@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,7 +12,7 @@ import (
 )
 
 // BaseURL is the base URL for all Minecraft CurseForge queries.
-const BaseURL = "https://addons-ecs.forgesvc.net/api/v2/addon/"
+const BaseURL = "https://addons-ecs.forgesvc.net/api/v2/addon"
 
 // SortType represents the ways mods can be sorted.
 type SortType uint
@@ -26,8 +27,8 @@ const (
 	TotalDownloads
 )
 
-// ManyParams specify the parameters for a mods query.
-type ManyParams struct {
+// SearchParams specify the parameters for searching for mods.
+type SearchParams struct {
 	Version  string   `url:"gameVersion,omitempty"`
 	Search   string   `url:"searchFilter,omitempty"`
 	Page     uint     `url:"index,omitempty"`
@@ -35,14 +36,14 @@ type ManyParams struct {
 	Sort     SortType `url:"sort,omitempty"`
 }
 
-// Many fetches all Minecraft CurseForge mods based on query parameters.
-func Many(q *ManyParams) ([]Mod, error) {
+// Search returns all Minecraft CurseForge mods based on query parameters.
+func Search(q *SearchParams) ([]Mod, error) {
 	v, err := query.Values(q)
 	if err != nil {
 		return nil, err
 	}
 
-	url := BaseURL + "search?gameId=432&sectionId=6"
+	url := BaseURL + "/search?gameId=432&sectionId=6"
 
 	query := v.Encode()
 	if len(query) != 0 {
@@ -70,12 +71,12 @@ func Many(q *ManyParams) ([]Mod, error) {
 
 // All returns all Minecraft CurseForge mods.
 func All() ([]Mod, error) {
-	return Many(&ManyParams{})
+	return Search(&SearchParams{})
 }
 
 // One fetches a single Minecraft CurseForge mod by ID.
 func One(id uint) (*Mod, error) {
-	res, err := http.Get(fmt.Sprintf("%s%d", BaseURL, id))
+	res, err := http.Get(fmt.Sprintf("%s/%d", BaseURL, id))
 	if err != nil {
 		return nil, err
 	}
@@ -92,4 +93,30 @@ func One(id uint) (*Mod, error) {
 	}
 
 	return mod, nil
+}
+
+// Many fetches multiple Minecraft CurseForge mods by ID.
+func Many(ids []uint) ([]Mod, error) {
+	body, err := json.Marshal(ids)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := http.Post(BaseURL, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return nil, errors.New(res.Status)
+	}
+
+	var mods []Mod
+	d := json.NewDecoder(res.Body)
+	if err := d.Decode(&mods); err != nil && err != io.EOF {
+		return nil, err
+	}
+
+	return mods, nil
 }
