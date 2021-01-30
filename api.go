@@ -120,3 +120,24 @@ func Many(ids []uint) ([]Mod, error) {
 
 	return mods, nil
 }
+
+// Files fetches all the files for a Minecraft CurseForge mod by ID.
+func Files(id uint) ([]ModFile, error) {
+	res, err := http.Get(fmt.Sprintf("%s/%d/files", BaseURL, id))
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return nil, errors.New(res.Status)
+	}
+
+	var files []ModFile
+	d := json.NewDecoder(res.Body)
+	if err := d.Decode(&files); err != nil && err != io.EOF {
+		return nil, err
+	}
+
+	return files, nil
+}

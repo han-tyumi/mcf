@@ -23,3 +23,9 @@ func TestMany(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestFiles(t *testing.T) {
+	if _, err := mcf.Files(238222); err != nil {
+		t.Fatal(err)
+	}
+}
