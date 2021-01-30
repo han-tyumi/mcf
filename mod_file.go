@@ -1,11 +1,13 @@
 package mcf
 
+import "time"
+
 // ModFile is the JSON response of a mod file retrieved from CurseForge.
 type ModFile struct {
 	ID            uint          `json:"id"`
 	DisplayName   string        `json:"displayName"`
 	Name          string        `json:"fileName"`
-	Uploaded      string        `json:"fileDate"`
+	Uploaded      time.Time     `json:"fileDate"`
 	Size          uint          `json:"fileLength"`
 	ReleaseType   uint          `json:"releaseType"`
 	Status        uint          `json:"fileStatus"`

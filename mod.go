@@ -1,5 +1,7 @@
 package mcf
 
+import "time"
+
 // ModLatestFile is the JSON response for a mod's latest files.
 type ModLatestFile struct {
 	ModFile
@@ -16,7 +18,7 @@ type ModLatestFile struct {
 	TypeID                interface{} `json:"fileTypeId"`
 	ExposeAsAlternative   interface{} `json:"exposeAsAlternative"`
 	FingerprintID         uint        `json:"packageFingerprintId"`
-	VersionReleased       string      `json:"gameVersionDateReleased"`
+	VersionReleased       time.Time   `json:"gameVersionDateReleased"`
 	VersionMappingID      uint        `json:"gameVersionMappingId"`
 	VersionID             uint        `json:"gameVersionId"`
 	GameID                uint        `json:"gameId"`
@@ -40,9 +42,9 @@ type Mod struct {
 	Popularity   float64         `json:"popularityScore"`
 	Rank         uint            `json:"gamePopularityRank"`
 	Language     string          `json:"primaryLanguage"`
-	Created      string          `json:"dateCreated"`
-	Updated      string          `json:"dateModified"`
-	Released     string          `json:"dateReleased"`
+	Created      time.Time       `json:"dateCreated"`
+	Updated      time.Time       `json:"dateModified"`
+	Released     time.Time       `json:"dateReleased"`
 	Available    bool            `json:"isAvailable"`
 	Experimental bool            `json:"isExperimental"`
 }
