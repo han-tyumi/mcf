@@ -2,16 +2,22 @@ package mcf
 
 // ModFile is the JSON response of a mod file retrieved from CurseForge.
 type ModFile struct {
-	ID          uint     `json:"id"`
-	Versions    []string `json:"gameVersion"`
-	Name        string   `json:"file_name"`
-	Size        uint     `json:"fileLength"`
-	ReleaseType uint     `json:"releaseType"`
-	Slug        string   `json:"mod_key"`
-	URL         string   `json:"downloadUrl"`
-	Downloads   uint     `json:"download_count"`
-	Uploaded    string   `json:"fileDate"`
-	Available   bool     `json:"isAvailable"`
-	Alternate   bool     `json:"isAlternate"`
-	AlternateID uint     `json:"alternateFileId"`
+	ID            uint          `json:"id"`
+	DisplayName   string        `json:"displayName"`
+	Name          string        `json:"fileName"`
+	Uploaded      string        `json:"fileDate"`
+	Size          uint          `json:"fileLength"`
+	ReleaseType   uint          `json:"releaseType"`
+	Status        uint          `json:"fileStatus"`
+	URL           string        `json:"downloadUrl"`
+	Alternate     bool          `json:"isAlternate"`
+	AlternateID   uint          `json:"alternateFileId"`
+	Dependencies  []interface{} `json:"dependencies"`
+	Available     bool          `json:"isAvailable"`
+	Modules       []interface{} `json:"modules"`
+	Fingerprint   uint          `json:"packageFingerprint"`
+	Versions      []string      `json:"gameVersion"`
+	Metadata      interface{}   `json:"installMetadata"`
+	PackID        interface{}   `json:"serverPackFileId"`
+	InstallScript bool          `json:"hasInstallScript"`
 }
