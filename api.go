@@ -3,7 +3,6 @@ package mcf
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -40,7 +39,7 @@ type SearchParams struct {
 func Search(q *SearchParams) ([]Mod, error) {
 	v, err := query.Values(q)
 	if err != nil {
-		return nil, err
+		return nil, apiErr("search", q, err)
 	}
 
 	url := BaseURL + "/search?gameId=432&sectionId=6"
@@ -52,18 +51,18 @@ func Search(q *SearchParams) ([]Mod, error) {
 
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, apiErr("search", url, err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+		return nil, apiErr("search", url, res.Status)
 	}
 
 	var mods []Mod
 	d := json.NewDecoder(res.Body)
 	if err := d.Decode(&mods); err != nil && err != io.EOF {
-		return nil, err
+		return nil, apiErr("search", url, err)
 	}
 
 	return mods, nil
@@ -76,20 +75,21 @@ func All() ([]Mod, error) {
 
 // One fetches a single Minecraft CurseForge mod by ID.
 func One(id uint) (*Mod, error) {
-	res, err := http.Get(fmt.Sprintf("%s/%d", BaseURL, id))
+	url := fmt.Sprintf("%s/%d", BaseURL, id)
+	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, apiErr("one", url, err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+		return nil, apiErr("one", url, res.Status)
 	}
 
 	mod := &Mod{}
 	d := json.NewDecoder(res.Body)
 	if err := d.Decode(mod); err != nil && err != io.EOF {
-		return nil, err
+		return nil, apiErr("one", url, err)
 	}
 
 	return mod, nil
@@ -99,23 +99,23 @@ func One(id uint) (*Mod, error) {
 func Many(ids []uint) ([]Mod, error) {
 	body, err := json.Marshal(ids)
 	if err != nil {
-		return nil, err
+		return nil, apiErr("many", ids, err)
 	}
 
 	res, err := http.Post(BaseURL, "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return nil, err
+		return nil, apiErr("many", ids, err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+		return nil, apiErr("many", ids, res.Status)
 	}
 
 	var mods []Mod
 	d := json.NewDecoder(res.Body)
 	if err := d.Decode(&mods); err != nil && err != io.EOF {
-		return nil, err
+		return nil, apiErr("many", ids, err)
 	}
 
 	return mods, nil
@@ -123,21 +123,26 @@ func Many(ids []uint) ([]Mod, error) {
 
 // Files fetches all the files for a Minecraft CurseForge mod by ID.
 func Files(id uint) ([]ModFile, error) {
-	res, err := http.Get(fmt.Sprintf("%s/%d/files", BaseURL, id))
+	url := fmt.Sprintf("%s/%d/files", BaseURL, id)
+	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, apiErr("files", url, err)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+		return nil, apiErr("files", url, res.Status)
 	}
 
 	var files []ModFile
 	d := json.NewDecoder(res.Body)
 	if err := d.Decode(&files); err != nil && err != io.EOF {
-		return nil, err
+		return nil, apiErr("files", url, err)
 	}
 
 	return files, nil
+}
+
+func apiErr(fn string, id, err interface{}) error {
+	return fmt.Errorf("%s: %v: %v", fn, id, err)
 }
